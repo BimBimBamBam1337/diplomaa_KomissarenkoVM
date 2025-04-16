@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  # service_bot:
+  #   build: service_bot/
+  postgres:
+    image: postgres:15
