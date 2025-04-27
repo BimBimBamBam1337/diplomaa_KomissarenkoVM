@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 import pyautogui
 import ctypes
 import subprocess
@@ -19,7 +20,7 @@ class DesktopInfo:
         self.system = SystemInfo()
         self.wallpaper = os.path.join(os.getcwd(), "wallpapers", wallpaper_name)
 
-    def get_desktop_info(self):
+    def get_desktop_info(self) -> Dict:
         """
         Получает информацию о разрешении экрана и пути к рабочему столу.
 
@@ -28,7 +29,8 @@ class DesktopInfo:
         screen_width, screen_height = pyautogui.size()
         desktop_path = self.system.home_path / "Desktop"
         return {
-            "resolution": f"{screen_width}x{screen_height}",
+            "screen_width": screen_width,
+            "screen_height": screen_height,
             "path": f"{desktop_path}",
         }
 
