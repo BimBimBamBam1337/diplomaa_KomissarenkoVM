@@ -1,6 +1,6 @@
 import sys
-import ui.frmMain as main_form
-from PyQt6.QtWidgets import QMainWindow, QApplication
+import app.ui.frmMain as main_form
+from PyQt6.QtWidgets import QMainWindow, QApplication, QVBoxLayout
 
 
 class MyAppName(QMainWindow, main_form.TestWidget):

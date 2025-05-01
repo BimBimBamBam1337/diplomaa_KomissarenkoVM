@@ -89,7 +89,7 @@ class SystemInfo:
         }
 
     @staticmethod
-    def get_vmem() -> Dict[str, str]:
+    def get_vmem() -> Dict[str, any]:
         """
         Получает информацию о виртуальной памяти системы.
 
@@ -111,7 +111,7 @@ class SystemInfo:
         return {
             "total": SystemInfo.get_size(svmem.total),
             "available": SystemInfo.get_size(svmem.available),
-            "percent": f"{svmem.percent}%",
+            "percent": svmem.percent,
             "used": SystemInfo.get_size(svmem.used),
             "free": SystemInfo.get_size(svmem.free),
             "active": SystemInfo.get_size(svmem.active),
