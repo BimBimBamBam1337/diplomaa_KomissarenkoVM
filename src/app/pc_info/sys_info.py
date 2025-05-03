@@ -111,7 +111,7 @@ class SystemInfo:
         return {
             "total": SystemInfo.get_size(svmem.total),
             "available": SystemInfo.get_size(svmem.available),
-            "percent": svmem.percent,
+            "percent_used": svmem.percent,
             "used": SystemInfo.get_size(svmem.used),
             "free": SystemInfo.get_size(svmem.free),
             "active": SystemInfo.get_size(svmem.active),
@@ -152,7 +152,7 @@ class SystemInfo:
                 "total": self.get_size(partition_usage.total).strip(),
                 "used": self.get_size(partition_usage.used).strip(),
                 "free": self.get_size(partition_usage.free).strip(),
-                "percent_used": f"{partition_usage.percent}%",
+                "percent_used": {partition_usage.percent},
             }
 
         return disk_info

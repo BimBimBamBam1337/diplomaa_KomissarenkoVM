@@ -11,14 +11,13 @@ class DesktopInfo:
     Класс для получения информации о рабочем столе и обоях пользователя.
     """
 
-    def __init__(self, wallpaper_name):
+    def __init__(self, wallpaper: str):
         """
         Инициализация класса DesktopInfo.
 
-        :param wallpaper_name: Название файла обоев.
         """
+        self.wallpaper = wallpaper
         self.system = SystemInfo()
-        self.wallpaper = os.path.join(os.getcwd(), "wallpapers", wallpaper_name)
 
     def get_desktop_info(self) -> Dict:
         """
@@ -57,13 +56,27 @@ class DesktopInfo:
 
     def _get_wallpaper_linux(self):
         """
-        Получает текущие обои рабочего стола для Linux.
+        Получает имя файла текущих обоев рабочего стола для Linux (GNOME).
 
-        :return: Путь к текущим обоям.
+        :return: Имя файла обоев (например, 'image.jpg') или None, если ошибка.
         """
-        command = "gsettings get org.gnome.desktop.background picture-uri"
-        result = subprocess.run(command, shell=True, capture_output=True, text=True)
-        return result.stdout.strip()
+        try:
+            command = "gsettings get org.gnome.desktop.background picture-uri"
+            result = subprocess.run(
+                command, shell=True, capture_output=True, text=True, check=True
+            )
+
+            # Очищаем вывод: убираем кавычки и 'file://'
+            wallpaper_uri = result.stdout.strip().strip("'")
+            wallpaper_path = wallpaper_uri.replace("file://", "")
+            file_name = os.path.basename(wallpaper_path)
+            if file_name == self.wallpaper:
+                return True
+            return False
+
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            print(f"Ошибка при получении обоев: {e}")
+            return None
 
     def _get_wallpaper_windows(self):
         """
