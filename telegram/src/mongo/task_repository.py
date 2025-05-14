@@ -23,9 +23,9 @@ async def create_task(
     return task
 
 
-async def get_task(task_id: str):
+async def get_task_by_task_id(task_id: int):
     await init_mongo()
-    return await Task.get(task_id)
+    return await Task.find_one({"task_id": task_id})
 
 
 async def get_task_by_name(task_name: str):
@@ -47,9 +47,22 @@ async def get_today_tasks():
     return [task.model_dump() for task in tasks]
 
 
+async def get_tasks_by_id(engineer_id: int):
+    await init_mongo()
+    tasks = await Task.find(Task.engineer_id == engineer_id).to_list()
+    return [task.model_dump() for task in tasks]
+
+
 async def update_engineer_in_task(task_id: int, engineer_id: int):
     await init_mongo()
     task = await Task.find_one(Task.task_id == task_id).update_one(
-        {"$set": {"engineer_id": engineer_id}}
+        {
+            "$set": {
+                "engineer_id": engineer_id,
+                "started": True,
+                "started_at": datetime.now(),
+            }
+        }
     )
+    logger.info(f"UPDATE | Update engineer on task {task_id}: {engineer_id}")
     return task

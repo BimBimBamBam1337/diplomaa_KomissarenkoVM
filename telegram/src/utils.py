@@ -1,11 +1,5 @@
-import re
-
 from datetime import datetime
 from .mongo import Task
-
-
-def escape_md(text: str) -> str:
-    return re.sub(r"([_*\[\]()~`>#+\-=|{}.!\\])", r"\\\1", str(text))
 
 
 def format_date(dt: datetime | None) -> str:
