@@ -1,5 +1,5 @@
 import sys
-import app.ui.frmMain as main_form
+import ui.frmMain as main_form
 from PyQt6.QtWidgets import QMainWindow, QApplication, QVBoxLayout
 
 
