@@ -4,6 +4,7 @@ import pyautogui
 import ctypes
 import subprocess
 from .sys_info import SystemInfo
+from config import WALLPAPERS
 
 
 class DesktopInfo:
@@ -16,7 +17,7 @@ class DesktopInfo:
         Инициализация класса DesktopInfo.
 
         """
-        self.wallpaper = wallpaper
+        self.wallpaper = WALLPAPERS + wallpaper
         self.system = SystemInfo()
 
     def get_desktop_info(self) -> Dict:
@@ -91,3 +92,14 @@ class DesktopInfo:
             SPI_GETDESKWALLPAPER, MAX_PATH, buffer, 0
         )
         return buffer.value
+
+    def set_wallpaper_gnome(self):
+        subprocess.run(
+            [
+                "gsettings",
+                "set",
+                "org.gnome.desktop.background",
+                "picture-uri",
+                f"file://{self.wallpaper}",
+            ]
+        )

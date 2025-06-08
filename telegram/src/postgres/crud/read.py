@@ -18,7 +18,7 @@ async def get_entity(
             entity = (
                 (
                     await session.execute(
-                        select(tablename.id).where(tablename.id == user_id)
+                        select(tablename).where(tablename.id == user_id)
                     )
                 )
                 .scalars()
@@ -38,3 +38,8 @@ async def get_entity(
             )
 
             return entity
+
+
+async def get_entitys(tablename: Type[Base]):
+    async with async_session() as session:
+        return (await session.execute(select(tablename))).scalars().all()

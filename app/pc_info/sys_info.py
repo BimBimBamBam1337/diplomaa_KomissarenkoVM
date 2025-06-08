@@ -12,6 +12,7 @@ class SystemInfo:
         self.os_type = self.get_platform_info().get("system")
         self.cpu_architecture = self.get_platform_info().get("machine")
         self.uptime = self.boot_time_start().get("uptime")
+        self.node = self.get_platform_info().get("node")
         self.home_path = Path.home()
 
     @staticmethod

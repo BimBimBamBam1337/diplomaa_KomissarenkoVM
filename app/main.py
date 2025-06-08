@@ -1,25 +1,25 @@
 import sys
-import ui.frmMain as main_form
-from PyQt6.QtWidgets import QMainWindow, QApplication, QVBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from ui.server import Server
+from ui.frmMain import AdminWidget  # твой интерфейс с add_client_info_widget
 
 
-class MyAppName(QMainWindow, main_form.TestWidget):
-    def __init__(self, parent=None):
-        super(MyAppName, self).__init__(parent)
+class MyApp(QMainWindow, AdminWidget):
+    def __init__(self):
+        super().__init__()
         self.setupUi(self)
+
+        self.server = Server()
+        self.server.data_received.connect(self.add_client_info_widget)
+        self.server.start()
 
         self.show()
 
 
-def refresh():
-    QApplication.processEvents()
-
-
 def main():
     app = QApplication(sys.argv)
-    form = MyAppName()
-    form.show()
-    app.exec()
+    window = MyApp()
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

@@ -14,13 +14,10 @@ class Base(DeclarativeBase):
         return self.__name__.lower()
 
 
-class Admins(Base):
-    pass
+class Admins(Base): ...
 
 
-class Professors(Base):
-    pass
+class Professors(Base): ...
 
 
-class Engineers(Base):
-    pass
+class Engineers(Base): ...

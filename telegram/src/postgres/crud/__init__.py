@@ -1,1 +1,1 @@
-from .read import get_entity
+from .read import get_entity, get_entitys

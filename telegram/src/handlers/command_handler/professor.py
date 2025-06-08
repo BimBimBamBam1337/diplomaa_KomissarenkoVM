@@ -12,6 +12,11 @@ from src.utils import get_task_response
 router = Router()
 
 
+@router.message(Command("professor"), IsProfessor())
+async def engineer_handler(message: Message):
+    await message.answer()
+
+
 @router.message(Command("new_task"), IsProfessor())
 async def new_task_handler(message: Message, state: FSMContext):
     await message.answer(
@@ -60,7 +65,6 @@ async def find_task_handler(message: Message, state: FSMContext):
 
 @router.message(FindTask.OneTask)
 async def send_task_handler(message: Message, state: FSMContext):
-    task = await get_task_by_task_id(message.text)
-
+    task = await get_task_by_task_id(task_id=int(message.text))
     await message.answer(get_task_response(task), parse_mode=ParseMode.MARKDOWN_V2)
     await state.clear()

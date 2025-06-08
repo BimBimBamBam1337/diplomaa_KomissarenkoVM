@@ -1,11 +1,24 @@
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import QTimer, Qt, QPropertyAnimation, QEasingCurve, pyqtProperty
-from PyQt6.QtGui import QPainter, QColor, QBrush
+from PyQt6.QtCore import (
+    QTimer,
+    Qt,
+    QPropertyAnimation,
+    QEasingCurve,
+    pyqtProperty,
+    pyqtSignal,
+)
+from PyQt6.QtGui import QPainter, QColor, QBrush, QMouseEvent
 
 
 class DotProgress(QWidget):
+    clicked = pyqtSignal()  # 💥 Новый сигнал
+
     def __init__(
-        self, progress: int | float = 0, parent=None, is_correct_wallpaper: bool = True
+        self,
+        progress: int | float = 0,
+        parent=None,
+        is_correct_wallpaper: bool | None = None,
+        label: str = "Значение",
     ):
         super().__init__(parent)
         self.setFixedSize(30, 30)
@@ -13,12 +26,12 @@ class DotProgress(QWidget):
         self._progress = 0
         self._target_progress = max(0, min(100, progress))
         self._is_correct_wallpaper = is_correct_wallpaper
+        self._label = label
 
-        # Цвета для разных уровней загруженности
         self.outer_color = QColor("#CCCCCC")
-        self.low_color = QColor("#4CAF50")  # Зелёный (<50%)
-        self.medium_color = QColor("#FFC107")  # Жёлтый (50-75%)
-        self.high_color = QColor("#F44336")  # Красный (>75%)
+        self.low_color = QColor("#4CAF50")
+        self.medium_color = QColor("#FFC107")
+        self.high_color = QColor("#F44336")
 
         self.animation = QPropertyAnimation(self, b"progress")
         self.animation.setDuration(500)
@@ -37,28 +50,23 @@ class DotProgress(QWidget):
     @progress.setter
     def progress(self, value):
         self._progress = max(0, min(100, value))
+        self.update_tooltip()
         self.update()
 
-    # def get_progress_color(self):
-    #     """Возвращает цвет в зависимости от уровня загруженности"""
-    #     if self._progress < 50:
-    #         return self.low_color
-    #     elif 50 <= self._progress < 75:
-    #         return self.medium_color
-    #     else:
-    #         return self.high_color
+    def update_tooltip(self):
+        if self._is_correct_wallpaper is not None:
+            state = "правильные" if self._is_correct_wallpaper else "неправильные"
+            tooltip = f"{self._label}: {state}"
+        else:
+            tooltip = f"{self._label}: {self._progress}%"
+        self.setToolTip(tooltip)
 
     def get_progress_color(self):
-        """Цвет:
-        - зелёный, если is_correct_wallpaper=True,
-        - красный, если is_correct_wallpaper=False,
-        - по прогрессу, если is_correct_wallpaper=None.
-        """
         if self._is_correct_wallpaper is True:
             return self.low_color
         elif self._is_correct_wallpaper is False:
             return self.high_color
-        else:  # None → цвет зависит от прогресса
+        else:
             if self._progress < 50:
                 return self.low_color
             elif 50 <= self._progress < 75:
@@ -85,7 +93,6 @@ class DotProgress(QWidget):
         size = min(rect.width(), rect.height())
         center = rect.center()
 
-        # Внешний круг (фон)
         max_radius = int(size / 2 * 0.8)
         painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(QBrush(self.outer_color))
@@ -93,8 +100,12 @@ class DotProgress(QWidget):
         painter.drawEllipse(center, max_radius, max_radius)
 
     def set_threshold_colors(self, low: str, medium: str, high: str):
-        """Устанавливает пороговые цвета"""
         self.low_color = QColor(low)
         self.medium_color = QColor(medium)
         self.high_color = QColor(high)
         self.update()
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()  # 🔔 Клик!
+        super().mousePressEvent(event)

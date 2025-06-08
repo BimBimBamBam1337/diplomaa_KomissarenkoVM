@@ -1,0 +1,28 @@
+services:
+  client1:
+    build:
+      context: .
+      dockerfile: monitoring/client/Dockerfile
+    container_name: monitoring_client1
+    networks:
+      - monitor_net
+
+  client2:
+    build:
+      context: .
+      dockerfile: monitoring/client/Dockerfile
+    container_name: monitoring_client2
+    networks:
+      - monitor_net
+
+  client3:
+    build:
+      context: .
+      dockerfile: monitoring/client/Dockerfile
+    container_name: monitoring_client3
+    networks:
+      - monitor_net
+
+networks:
+  monitor_net:
+    driver: bridge

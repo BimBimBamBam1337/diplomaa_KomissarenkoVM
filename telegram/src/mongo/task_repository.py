@@ -1,8 +1,8 @@
-from datetime import datetime
 from loguru import logger
+from datetime import datetime, timedelta
+
 from .task import Task
 from src.mongo import init_mongo
-from datetime import datetime, timedelta
 
 
 async def create_task(
@@ -25,12 +25,17 @@ async def create_task(
 
 async def get_task_by_task_id(task_id: int):
     await init_mongo()
-    return await Task.find_one({"task_id": task_id})
+    return dict(await Task.find_one({"task_id": task_id}))
+
+
+async def get_all_tasks():
+    await init_mongo()
+    return [task.model_dump() async for task in Task.find()]
 
 
 async def get_task_by_name(task_name: str):
     await init_mongo()
-    return await Task.find_one({"task_name": task_name})
+    return dict(await Task.find_one({"task_name": task_name}))
 
 
 async def get_today_tasks():
